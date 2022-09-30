@@ -62,17 +62,54 @@ document.addEventListener('DOMContentLoaded', function () {
     container.append(textContainer);
     container.setAttribute('id', `todo-${todoObject.id}`);
 
+    // event RENDER_EVENT
+    document.addEventListener(RENDER_EVENT, function () {
+      const uncompletedTODOList = document.getElementById('todos');
+      uncompletedTODOList.innerHTML = '';
+
+      for (const todoItem of todos) {
+        const todoElement = makeTodo(todoItem);
+        uncompletedTODOList.append(todoElement);
+      }
+    });
+
+    // check, uncheck and delete todo
+    if ((todoObject, isCompleted)) {
+      const undoButton = document.createElement('button');
+      undoButton.classList.add('undo-button');
+
+      undoButton.addEventListener('click', function () {
+        undoTaskFromCompleted(todoObject.id);
+      });
+
+      const trashButton = document.createElement('button');
+      trashButton.classList.add('trash-button');
+
+      trashButton.addEventListener('click', function () {
+        removeTaskFromCompleted(todoObject.id);
+      });
+
+      container.append(undoButton, trashButton);
+    } else {
+      const checkButton = document.createElement('button');
+      checkButton.classList.add('check-button');
+
+      checkButton.addEventListener('click', function () {
+        addTaskCompleted(todoElement.id);
+      });
+
+      container.append(checkButton);
+    }
+
+    // add task complete
+    function addTaskToCompleted(todoId) {
+      const todoTarget = findTodo(todoId);
+
+      if (todoTarget == null) return;
+
+      todoTarget.isCompleted = true;
+      document.dispatchEvent(new Event(RENDER_EVENT));
+    }
     return container;
   }
-
-  // event RENDER_EVENT
-  document.addEventListener(RENDER_EVENT, function () {
-    const uncompletedTODOList = document.getElementById('todo');
-    uncompletedTODOList.innerHTML = '';
-
-    for (const todoItem of todos) {
-      const todoElement = makeTodo(todoItem);
-      uncompletedTODOList.append(todoElement);
-    }
-  });
 });

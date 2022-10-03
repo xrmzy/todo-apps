@@ -1,17 +1,17 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const submitForm = document.getElementById("form");
-  submitForm.addEventListener("submit", function (event) {
+document.addEventListener('DOMContentLoaded', function () {
+  const submitForm = document.getElementById('form');
+  submitForm.addEventListener('submit', function (event) {
     event.preventDefault();
     addTodo();
   });
 
   const todos = [];
-  const RENDER_EVENT = "event-todo";
+  const RENDER_EVENT = 'event-todo';
   //function addTodo()
 
   function addTodo() {
-    const textTodo = document.getElementById("title").value;
-    const timestamp = document.getElementById("date").value;
+    const textTodo = document.getElementById('title').value;
+    const timestamp = document.getElementById('date').value;
 
     const genratedID = generatedId();
     const todoObject = generateTodoObject(
@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     todos.push(todoObject);
 
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData(); //fungsi untuk menyimpan data secara langsung
   }
 
   //function generatedId
@@ -47,11 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // event RENDER_EVENT
   document.addEventListener(RENDER_EVENT, function () {
-    const uncompletedTODOList = document.getElementById("todos");
-    uncompletedTODOList.innerHTML = "";
+    const uncompletedTODOList = document.getElementById('todos');
+    uncompletedTODOList.innerHTML = '';
 
-    const completedTODOList = document.getElementById("completed-todos");
-    completedTODOList.innerHTML = "";
+    const completedTODOList = document.getElementById('completed-todos');
+    completedTODOList.innerHTML = '';
 
     for (const todoItem of todos) {
       const todoElement = makeTodo(todoItem);
@@ -65,39 +66,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //makeTodo() function to showing the datas in container
   function makeTodo(todoObject) {
-    const textTitle = document.createElement("h2");
+    const textTitle = document.createElement('h2');
     textTitle.innerText = todoObject.task;
 
-    const textTimestamp = document.createElement("p");
+    const textTimestamp = document.createElement('p');
     textTimestamp.innerText = todoObject.timestamp;
 
-    const textContainer = document.createElement("div");
-    textContainer.classList.add("inner");
+    const textContainer = document.createElement('div');
+    textContainer.classList.add('inner');
     textContainer.append(textTitle, textTimestamp);
 
-    const container = document.createElement("div");
-    container.classList.add("item", "shadow");
+    const container = document.createElement('div');
+    container.classList.add('item', 'shadow');
     container.append(textContainer);
-    container.setAttribute("id", `todo-${todoObject.id}`);
+    container.setAttribute('id', `todo-${todoObject.id}`);
 
     if (todoObject.isCompleted) {
-      const undoButton = document.createElement("button");
-      undoButton.classList.add("undo-button");
-      undoButton.addEventListener("click", function () {
+      const undoButton = document.createElement('button');
+      undoButton.classList.add('undo-button');
+      undoButton.addEventListener('click', function () {
         undoTaskFromCompleted(todoObject.id);
       });
 
-      const trashButton = document.createElement("button");
-      trashButton.classList.add("trash-button");
-      trashButton.addEventListener("click", function () {
+      const trashButton = document.createElement('button');
+      trashButton.classList.add('trash-button');
+      trashButton.addEventListener('click', function () {
         removeTaskFromCompleted(todoObject.id);
       });
 
       container.append(undoButton, trashButton);
     } else {
-      const checkButton = document.createElement("button");
-      checkButton.classList.add("check-button");
-      checkButton.addEventListener("click", function () {
+      const checkButton = document.createElement('button');
+      checkButton.classList.add('check-button');
+      checkButton.addEventListener('click', function () {
         addTaskToCompleted(todoObject.id);
       });
       container.append(checkButton);
@@ -114,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     todoTarget.isCompleted = true;
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData(); //fungsi untuk menyimpan data secara langsung
   }
 
   //findTodo the function to find todo with correct ID in array todos
@@ -134,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     todos.splice(todoTarget, 1);
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData(); //fungsi untuk menyimpan data secara langsung
   }
 
   // undo task from completed in todoId
@@ -144,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     todoTarget.isCompleted = false;
     document.dispatchEvent(new Event(RENDER_EVENT));
+    saveData(); //fungsi untuk menyimpan data secara langsung
   }
 
   // find todo index

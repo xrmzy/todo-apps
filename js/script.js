@@ -159,4 +159,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     return -1;
   }
+
+  // saveData function
+  function saveData() {
+    if (isStorageExist()) {
+      const parsed = JSON.stringify(todos);
+      localStorage.setItem(STORAGE_KEY, parsed);
+      document.dispatchEvent(new Event(SAVED_EVENT));
+    }
+  }
+
+  // STORAGE_KEY, SAVED_EVENT & isStorage_Exist
+  const SAVED_EVENT = 'saved-todo';
+  const STORAGE_KEY = 'TODO_APPS';
+
+  // isStorageExist bersifat boolean
+  function isStorageExist() {
+    if (typeof Storage === undefined) {
+      alert('Browser kamu tidak mendukung local storage');
+      return false;
+    }
+    return true;
+  }
+
+  // listener event dari SAVED_EVENT lalu call getItem(KEY) untuk ambil data dari local storage
+  document.addEventListener(SAVED_EVENT, function () {
+    console.log(localStorage.getItem(STORAGE_KEY));
+    // alert('Anda berhasil mengubah todo');
+  });
+
+  // load data from storage, fungsinya untuk menampilkan data ketika halaman dimuat pertama kali
+  function loadDataFromStorage() {
+    const seraializedData = localStorage.getItem(STORAGE_KEY);
+    let data = JSON.parse(seraializedData);
+
+    if (data !== null) {
+      for (const todo of data) {
+        todos.push(todo);
+      }
+    }
+    document.dispatchEvent(new Event(RENDER_EVENT));
+  }
+
+  // panggil fungsi pada saa semua element HTML selesai dimuat menjadi DOM
+  if (isStorageExist()) {
+    loadDataFromStorage();
+  }
 });
